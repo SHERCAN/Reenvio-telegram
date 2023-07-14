@@ -6,10 +6,12 @@ exceptiongroup==1.1.2
 h11==0.14.0
 idna==3.4
 outcome==1.2.0
+Pillow==10.0.0
 pyaes==1.6.1
 pyasn1==0.5.0
 pycparser==2.21
 PySocks==1.7.1
+python-dotenv==1.0.0
 requests==2.31.0
 rsa==4.9
 selenium==4.10.0
@@ -18,5 +20,7 @@ sortedcontainers==2.4.0
 Telethon==1.28.5
 trio==0.22.2
 trio-websocket==0.10.3
+undetected-chromedriver==3.5.0
 urllib3==2.0.3
+websockets==11.0.3
 wsproto==1.2.0
