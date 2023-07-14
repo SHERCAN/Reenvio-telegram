@@ -43,32 +43,41 @@ def deci(mon, red, precio):
 
 # Expresión regular para buscar la palabra "prepago"
 prepago_regex = re.compile(r"\bprepago\b", re.IGNORECASE)
+comercial_regex = re.compile(r"\bcomercial\b", re.IGNORECASE)
 
 # Expresión regular para buscar enlaces de YouTube
 youtube_regex = re.compile(r"\.?youtube\.com\/\S+")
 
 if __name__ == "__main__":
-    tarea = 10
+    tarea = 16
     chrome_options = Options()
     mobile_emulation = {
         "deviceMetrics": {"width": 360, "height": 640, "pixelRatio": 3.0},
         "userAgent": "Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Mobile Safari/537.36",
     }
     chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
+    chrome_options.add_argument("user-data-dir=C:\\Users\\House\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 7")
     webdriver_service = Service("C:\\Wemade\\chromedriver.exe")
     driver = webdriver.Chrome(service=webdriver_service, options=chrome_options)
     # Obtener las cookies del navegador
     # Ruta al archivo que deseas verificar
     ruta_archivo = "cookies.pkl"
-    driver.get("https://google.com/")
+    driver.get("https://m.youtube.com/")
+    dominio_actual = driver.current_url.split('/')[2]
+    print(dominio_actual)
+
+
     # Verificar si el archivo existe
     if os.path.isfile(ruta_archivo):
+        sleep(5)
         with open("cookies.pkl", "rb") as file:
             cookies = pickle.load(file)
+        # Filtrar las cookies para mantener solo las del dominio actual
+        cookies_filtradas = [cookie for cookie in cookies if dominio_actual in cookie['domain']]
         # Agregar las cookies al navegador
-        for cookie in cookies:
-            print(cookies)
-            driver.add_cookie(cookie)
+        # Agregar las cookies al navegador
+        # for cookie in cookies_filtradas:
+        #     driver.add_cookie(cookie)
     else:
         if input("Igresa para con") == "X":
             cookies = driver.get_cookies()
@@ -76,16 +85,18 @@ if __name__ == "__main__":
         # Guardar las cookies en un archivo
         with open("cookies.pkl", "wb") as file:
             pickle.dump(cookies, file)
-
+    driver.get("https://m.youtube.com/")
     client = TelegramClient(session_file, api_id, api_hash, sequential_updates=True)
     group_id = -1001900149179
 
     @client.on(events.NewMessage(chats=group_id))
     async def handle_new_message(event):
+        global tarea
+        print(tarea)
         message = event.message
         chat_id = message.chat_id
         text = message.message
-        if prepago_regex.search(text):
+        if prepago_regex.search(text) and comercial_regex.search(text):
             print(
                 f"Mensaje con la palabra 'prepago' recibido en el grupo {chat_id}: {text}"
             )
