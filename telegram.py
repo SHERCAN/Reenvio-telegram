@@ -45,11 +45,13 @@ class Chrome:
         self.options.add_argument(
             "--user-agent=Mozilla/5.0 (Linux; Android 11; SM-G9910) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.181 Mobile Safari/537.36"
         )
-        self.options.add_argument("--disable-blink-features=AutomationControlled")
+        self.options.add_argument(
+            "--disable-blink-features=AutomationControlled")
 
     def openPage(self, page: str) -> None:
         self.optionsChrome()
-        self.driver = uc.Chrome(executable_path=pathChromeDriver, options=self.options)
+        self.driver = uc.Chrome(
+            executable_path=pathChromeDriver, options=self.options)
         self.zoom_level = 0.75  # 75% de zoom
         self.driver.execute_script(
             "document.body.style.zoom = '{}';".format(self.zoom_level)
@@ -64,7 +66,8 @@ class Chrome:
 chrome = Chrome()
 if __name__ == "__main__":
     sleep(2)
-    client = TelegramClient(session_file, api_id, api_hash, sequential_updates=True)
+    client = TelegramClient(session_file, api_id,
+                            api_hash, sequential_updates=True)
 
     @client.on(events.NewMessage(chats=grupoChat))
     async def handle_new_message(event):
