@@ -2,7 +2,6 @@ from PIL import Image
 import undetected_chromedriver as uc
 from dotenv import load_dotenv
 from time import sleep, asctime
-from requests import post
 from telethon import TelegramClient, events
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -21,13 +20,13 @@ api_hash = os.getenv("API_HASH")
 phone = os.getenv("PHONE")
 session_file = "Shercan"
 # Mis chats
-grupoChat = -916304576
-comercialChat = 742390776
+# grupoChat = -916304576
+# comercialChat = 742390776
+
 # Los chats de la piramide
-# grupoChat = -1001842834987
-# comercialChat = 5962167568
-tarea = 0
-password = ""  # if you have two-step verification enabled
+grupoChat = -1001842834987
+comercialChat = 5962167568
+password = ""
 
 # Expresión regular para buscar la palabra "prepago"
 prepago_regex = re.compile(r"\bprepago\b", re.IGNORECASE)
@@ -50,9 +49,7 @@ class Chrome:
 
     def openPage(self, page: str) -> None:
         self.optionsChrome()
-        self.driver = uc.Chrome(
-            executable_path="C:\Wemade\chromedriver.exe", options=self.options
-        )
+        self.driver = uc.Chrome(executable_path=pathChromeDriver, options=self.options)
         self.zoom_level = 0.75  # 75% de zoom
         self.driver.execute_script(
             "document.body.style.zoom = '{}';".format(self.zoom_level)
@@ -66,19 +63,12 @@ class Chrome:
 
 chrome = Chrome()
 if __name__ == "__main__":
-    tarea = 0
-
     sleep(2)
-
     client = TelegramClient(session_file, api_id, api_hash, sequential_updates=True)
-
-    # @client.on(events.NewMessage())
-    # async def handle_new_message(event):
-    #     print(event.message, event.message.chat_id)
 
     @client.on(events.NewMessage(chats=grupoChat))
     async def handle_new_message(event):
-        global tarea
+        tarea = 0
         message = event.message
         chat_id = message.chat_id
         text = message.message
@@ -139,7 +129,7 @@ if __name__ == "__main__":
             cropped.save("captura.png")
             chrome.closePage()
             numero_aleatorio = random.randint(2, 300)
-            # sleep(numero_aleatorio)
+            sleep(numero_aleatorio)
             group_entity = await client.get_entity(grupoChat)
             await client.send_file(
                 group_entity, "captura.png", caption=f"Misión {tarea}"
