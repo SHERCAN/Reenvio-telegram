@@ -21,9 +21,8 @@ session_file = "Shercan"
 # comercialChat = 742390776
 
 # Los chats de la piramide
-grupoChat = -1001985444925  # chat de la piramide
-grupoChat = -1001989612463
-comercialChat = 6080768532
+grupoChat = int(os.getenv("GRUPO"))
+comercialChat = '@HR5631'
 password = ""
 
 # Expresión regular para buscar la palabra "prepago"
@@ -75,6 +74,7 @@ if __name__ == "__main__":
         chat_id = message.chat_id
         text = message.message
         numero_mision = re.search(r"tarea (\d+)", text)
+        print(text)
         if numero_mision:
             tarea = numero_mision.group(1)
         if prepago_regex.search(text) and comercial_regex.search(text):
@@ -135,16 +135,17 @@ if __name__ == "__main__":
                 chrome.closePage()
                 numero_aleatorio = random.randint(2, 5)
                 sleep(numero_aleatorio)
-                group_entity = await client.get_entity(grupoChat)
-                await client.send_file(
-                    group_entity, "captura.png", caption=f"Tarea {tarea}"
-                )
-                # chat_entity = await client.get_entity(comercialChat)
+                # group_entity = await client.get_entity(grupoChat)
                 # await client.send_file(
-                #     chat_entity, "captura.png", caption=f"Misión {tarea}"
+                #     group_entity, "captura.png", caption=f"Tarea {tarea}"
                 # )
+                chat_entity = await client.get_entity(comercialChat)
+                await client.send_file(
+                    chat_entity, "captura.png", caption=f"Misión {tarea}"
+                )
 
     print(asctime(), "-", "Auto-replying...oi")
+    print(phone)
     client.start(phone, password)
     client.run_until_disconnected()
     print(asctime(), "-", "Stopped!")
